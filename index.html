@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pizza Hub 🍕</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+      margin: 0;
+      padding: 0;
+    }
+    .page {
+      display: none;
+      height: 100vh;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      text-align: center;
+      padding: 20px;
+    }
+    .active {
+      display: flex;
+    }
+    h1, h2 {
+      color: #d62828;
+    }
+    button {
+      margin-top: 20px;
+      padding: 12px 24px;
+      font-size: 18px;
+      font-weight: bold;
+      color: white;
+      background: #d62828;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    button:hover {
+      background: #a4161a;
+    }
+    .categories {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .card {
+      background: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      width: 150px;
+      box-shadow: 0px 4px 12px rgba(0,0,0,0.15);
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+    .card:hover {
+      transform: translateY(-5px);
+    }
+    .builder {
+      background: #fff;
+      padding: 25px;
+      border-radius: 16px;
+      box-shadow: 0px 6px 18px rgba(0,0,0,0.2);
+      width: 380px;
+      text-align: left;
+    }
+    label {
+      display: block;
+      margin-top: 12px;
+      font-weight: bold;
+      color: #333;
+    }
+    select, input[type="checkbox"] {
+      margin-top: 6px;
+    }
+    select {
+      width: 100%;
+      padding: 8px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      margin-bottom: 5px;
+    }
+    .checkbox-group {
+      margin-top: 5px;
+      padding-left: 5px;
+    }
+    .output {
+      margin-top: 20px;
+      padding: 15px;
+      background: #f8f9fa;
+      border-left: 5px solid #d62828;
+      border-radius: 8px;
+    }
+    .nav-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 20px;
+    }
+    .nav-buttons button {
+      width: 48%;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Page 1: Welcome -->
+  <div id="page1" class="page active">
+    <h1>🍕 Welcome to Pizza Hub</h1>
+    <p>Freshly Baked Happiness, Just for You!</p>
+    <button onclick="goToPage(2)">Start Order</button>
+  </div>
+
+  <!-- Page 2: Category Selection -->
+  <div id="page2" class="page">
+    <h2>Choose Your Pizza Category</h2>
+    <div class="categories">
+      <div class="card" onclick="goToPage(3)">🥦 Veg Pizza</div>
+      <div class="card" onclick="goToPage(3)">🍗 Non-Veg Pizza</div>
+      <div class="card" onclick="goToPage(3)">⭐ Specials</div>
+    </div>
+    <div class="nav-buttons">
+      <button onclick="goToPage(1)">⬅ Back</button>
+    </div>
+  </div>
+
+  <!-- Page 3: Pizza Builder -->
+  <div id="page3" class="page">
+    <div class="builder">
+      <h2>🍕 Build Your Pizza</h2>
+
+      <label for="size">Choose Size:</label>
+      <select id="size">
+        <option>Small</option>
+        <option>Medium</option>
+        <option>Large</option>
+      </select>
+
+      <label>Toppings:</label>
+      <div class="checkbox-group">
+        <input type="checkbox" value="Cheese"> Cheese<br>
+        <input type="checkbox" value="Mushrooms"> Mushrooms<br>
+        <input type="checkbox" value="Pepperoni"> Pepperoni<br>
+        <input type="checkbox" value="Onions"> Onions<br>
+      </div>
+
+      <label for="addon">Add-ons:</label>
+      <select id="addon">
+        <option>None</option>
+        <option>Extra Cheese</option>
+        <option>Garlic Bread</option>
+        <option>Cold Drink</option>
+      </select>
+
+      <label for="delivery">Payment Method:</label>
+      <select id="delivery">
+        <option>Cash on Delivery</option>
+        <option>Online Payment</option>
+      </select>
+
+      <button onclick="buildPizza()">Build Order 🍽️</button>
+
+      <div id="result" class="output" style="display:none;"></div>
+
+      <div class="nav-buttons">
+        <button onclick="goToPage(2)">⬅ Back</button>
+        <button onclick="goToPage(1)">🏠 Home</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function goToPage(pageNum) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.getElementById('page' + pageNum).classList.add('active');
+    }
+
+    class Pizza {
+      constructor(size, toppings, addon, delivery) {
+        this.size = size;
+        this.toppings = toppings;
+        this.addon = addon;
+        this.delivery = delivery;
+      }
+    }
+    class PizzaBuilder {
+      constructor() {
+        this.size = "Medium";
+        this.toppings = [];
+        this.addon = "None";
+        this.delivery = "Cash on Delivery";
+      }
+      setSize(size) { this.size = size; return this; }
+      addToppings(toppings) { this.toppings = toppings; return this; }
+      setAddon(addon) { this.addon = addon; return this; }
+      setDelivery(delivery) { this.delivery = delivery; return this; }
+      build() { return new Pizza(this.size, this.toppings, this.addon, this.delivery); }
+    }
+    function buildPizza() {
+      let size = document.getElementById("size").value;
+      let addon = document.getElementById("addon").value;
+      let delivery = document.getElementById("delivery").value;
+      let toppings = [];
+      document.querySelectorAll("input[type=checkbox]:checked").forEach(c => toppings.push(c.value));
+      let pizza = new PizzaBuilder().setSize(size).addToppings(toppings).setAddon(addon).setDelivery(delivery).build();
+      document.getElementById("result").style.display = "block";
+      document.getElementById("result").innerHTML = `
+        <strong>✅ Order Summary:</strong><br>
+        🍕 Size: <b>${pizza.size}</b><br>
+        🧀 Toppings: ${pizza.toppings.length ? pizza.toppings.join(", ") : "None"}<br>
+        ➕ Add-on: ${pizza.addon}<br>
+        💳 Payment Method: ${pizza.delivery}
+      `;
+    }
+  </script>
+</body>
+</html>
