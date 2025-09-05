@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🍕 Pizza Order Builder</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .container {
+      background: #fff;
+      padding: 25px 35px;
+      border-radius: 16px;
+      box-shadow: 0px 8px 20px rgba(0,0,0,0.15);
+      width: 420px;
+      transition: transform 0.2s ease;
+    }
+    .container:hover {
+      transform: translateY(-4px);
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #d62828;
+    }
+    label {
+      display: block;
+      margin-top: 12px;
+      font-weight: bold;
+      color: #333;
+    }
+    select, input[type="checkbox"] {
+      margin-top: 6px;
+    }
+    select {
+      width: 100%;
+      padding: 8px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      margin-bottom: 5px;
+    }
+    .checkbox-group {
+      margin-top: 5px;
+      padding-left: 5px;
+    }
+    .checkbox-group input {
+      margin-right: 6px;
+    }
+    button {
+      margin-top: 20px;
+      width: 100%;
+      padding: 12px;
+      background: #d62828;
+      border: none;
+      color: #fff;
+      font-size: 16px;
+      font-weight: bold;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    button:hover {
+      background: #a4161a;
+    }
+    .output {
+      margin-top: 20px;
+      padding: 15px;
+      background: #f8f9fa;
+      border-left: 5px solid #d62828;
+      border-radius: 8px;
+      font-size: 15px;
+      line-height: 1.6;
+    }
+    .output strong {
+      color: #d62828;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>🍕 Build Your Pizza</h2>
+
+    <label for="size">Choose Size:</label>
+    <select id="size">
+      <option>Small</option>
+      <option>Medium</option>
+      <option>Large</option>
+    </select>
+
+    <label>Toppings:</label>
+    <div class="checkbox-group">
+      <input type="checkbox" value="Cheese"> Cheese<br>
+      <input type="checkbox" value="Mushrooms"> Mushrooms<br>
+      <input type="checkbox" value="Pepperoni"> Pepperoni<br>
+      <input type="checkbox" value="Onions"> Onions<br>
+    </div>
+
+    <label for="addon">Add-ons:</label>
+    <select id="addon">
+      <option>None</option>
+      <option>Extra Cheese</option>
+      <option>Garlic Bread</option>
+      <option>Cold Drink</option>
+    </select>
+
+    <label for="delivery">Payment Method:</label>
+    <select id="delivery">
+      <option>Cash on Delivery</option>
+      <option>Online Payment</option>
+    </select>
+
+    <button onclick="buildPizza()">Build Order 🍽️</button>
+
+    <div id="result" class="output" style="display:none;"></div>
+  </div>
+
+  <script>
+    // Builder Pattern
+    class Pizza {
+      constructor(size, toppings, addon, delivery) {
+        this.size = size;
+        this.toppings = toppings;
+        this.addon = addon;
+        this.delivery = delivery;
+      }
+    }
+
+    class PizzaBuilder {
+      constructor() {
+        this.size = "Medium";
+        this.toppings = [];
+        this.addon = "None";
+        this.delivery = "Cash on Delivery";
+      }
+
+      setSize(size) { this.size = size; return this; }
+      addToppings(toppings) { this.toppings = toppings; return this; }
+      setAddon(addon) { this.addon = addon; return this; }
+      setDelivery(delivery) { this.delivery = delivery; return this; }
+      build() {
+        return new Pizza(this.size, this.toppings, this.addon, this.delivery);
+      }
+    }
+
+    function buildPizza() {
+      let size = document.getElementById("size").value;
+      let addon = document.getElementById("addon").value;
+      let delivery = document.getElementById("delivery").value;
+      let toppings = [];
+      document.querySelectorAll("input[type=checkbox]:checked").forEach(c => toppings.push(c.value));
+
+      // Use Builder
+      let pizza = new PizzaBuilder()
+        .setSize(size)
+        .addToppings(toppings)
+        .setAddon(addon)
+        .setDelivery(delivery)
+        .build();
+
+      document.getElementById("result").style.display = "block";
+      document.getElementById("result").innerHTML = `
+        <strong>✅ Order Summary:</strong><br>
+        🍕 Size: <b>${pizza.size}</b><br>
+        🧀 Toppings: ${pizza.toppings.length ? pizza.toppings.join(", ") : "None"}<br>
+        ➕ Add-on: ${pizza.addon}<br>
+        💳 Payment Method: ${pizza.delivery}
+      `;
+    }
+  </script>
+</body>
+</html>
